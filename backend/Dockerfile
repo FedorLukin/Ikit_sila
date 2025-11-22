@@ -11,7 +11,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 WORKDIR /app
 
 # Копируем файл зависимостей
-COPY requirements.txt /app/
+COPY backend/requirements.txt /app/
 
 # Установка Python зависимостей
 RUN pip install --upgrade pip
@@ -33,7 +33,7 @@ COPY --from=builder /usr/local/lib/python3.11/site-packages /usr/local/lib/pytho
 
 # Копирование исходного кода проекта
 # Копируем содержимое backend/ в /app
-COPY . /app/
+COPY backend/. /app/
 
 # Предоставление доступа к порту
 EXPOSE 8000

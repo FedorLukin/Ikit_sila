@@ -12,7 +12,7 @@ FROM base as deps
 
 # Копируем файлы манифеста зависимостей из frontend/
 # Предполагаем, что package.json и package-lock.json находятся в frontend/
-COPY package*.json /app/
+COPY frontend/package*.json /app/
 
 # Устанавливаем зависимости
 # Используем команду 'ci' для более надежной установки
@@ -30,7 +30,7 @@ COPY --from=deps /app/node_modules /app/node_modules
 
 # Копируем исходный код фронтенда
 # Копируем все из frontend/ в /app
-COPY . /app/
+COPY frontend/. /app/
 
 # Порт, который использует Vite/Webpack/CRA dev-сервер (обычно 3000 или 5173)
 # Уточните порт в зависимости от конфигурации React-проекта. Используем 3000 как стандарт.

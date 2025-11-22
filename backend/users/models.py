@@ -6,7 +6,7 @@ from django.utils.translation import gettext_lazy as _
 class CustomUserManager(BaseUserManager):
     """Менеджер для создания пользователя и суперпользователя"""
 
-    def create_user(self, username, email, name, password=None):
+    def create_user(self, username, email, name=None, password=None):
         if not email:
             raise ValueError(_("Пользователь должен иметь email"))
         if not username:
@@ -17,7 +17,7 @@ class CustomUserManager(BaseUserManager):
             username=username,
             name=name,
         )
-        user.set_password(password)
+        user.set_password(password) 
         user.save(using=self._db)
         return user
 
@@ -105,6 +105,18 @@ class User(AbstractBaseUser):
         """Для совместимости с Django Admin"""
         return self.is_admin
 
+    @property
+    def is_staff(self):
+        """Для совместимости с Django Admin"""
+        return self.is_admin
+
+    def has_perm(self, perm, obj=None):
+        """Для совместимости с Django Admin"""
+        return self.is_admin
+
+    def has_module_perms(self, app_label):
+        """Для совместимости с Django Admin"""
+        return self.is_admin
 
 class EventRole(models.TextChoices):
     MANAGER = "manager", _("Менеджер")

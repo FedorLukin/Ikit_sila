@@ -59,7 +59,8 @@ class Event(models.Model):
         User,
         blank=True,
         related_name="jury_events",
-        verbose_name=_("Члены жюри")
+        verbose_name=_("Члены жюри"),
+        limit_choices_to={"is_admin": False}
     )
 
     class Meta:

@@ -7,8 +7,8 @@ services:
       context: .
       dockerfile: backend/Dockerfile
     container_name: backend
-    # volumes: [...] (Для разработки: монтирование кода)
-
+    volumes:
+      - sqllite_data: /app/db
     # React Frontend Development Service
   frontend:
     build:

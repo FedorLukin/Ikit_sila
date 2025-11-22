@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  # Django Ninja Backend Service
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    container_name: backend
+    # volumes: [...] (Для разработки: монтирование кода)
+
+    # React Frontend Development Service
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    container_name: frontend
+    # volumes: [...] (Для разработки: монтирование кода)
+    ports:
+      - "5173:5173" # Используется для HMR
+
+  # Nginx Reverse Proxy Service
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    container_name: nginx
+    ports:
+      - "80:80" # Доступен извне по порту 80
+    depends_on:
+      - backend
+      - frontend

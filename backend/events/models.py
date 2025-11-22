@@ -3,6 +3,30 @@ from users.models import User
 from django.utils.translation import gettext_lazy as _
 
 
+# class Event(models.Model):
+#     """Мероприятие (хакатон/интенсив)"""
+
+#     name = models.CharField(
+#         max_length=255,
+#         verbose_name=_("Название")
+#     )
+#     description = models.TextField(
+#         verbose_name=_("Описание")
+#     )
+#     date_time = models.DateTimeField(
+#         verbose_name=_("Дата и время проведения")
+#     )
+#     place = models.CharField(
+#         max_length=255,
+#         verbose_name=_("Место проведения")
+#     )
+
+#     class Meta:
+#         verbose_name = _("Мероприятие")
+#         verbose_name_plural = _("Мероприятия")
+
+#     def __str__(self):
+#         return self.name
 class Event(models.Model):
     """Мероприятие (хакатон/интенсив)"""
 
@@ -19,6 +43,23 @@ class Event(models.Model):
     place = models.CharField(
         max_length=255,
         verbose_name=_("Место проведения")
+    )
+
+    # Менеджер и жюри
+    manager = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="managed_events",
+        limit_choices_to={"is_admin": False},  # опционально
+        verbose_name=_("Менеджер мероприятия")
+    )
+    jury_members = models.ManyToManyField(
+        User,
+        blank=True,
+        related_name="jury_events",
+        verbose_name=_("Члены жюри")
     )
 
     class Meta:

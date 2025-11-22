@@ -1,0 +1,619 @@
+# Группа Аутентификация
+
+## Аутентификация [/auth]
+
+### Регистрация [POST /auth/register]
+
++ Request (application/json)
+
+        {
+            "username": "kenny",
+            "name": "Sergey Sidlik",
+            "password_hash": "hash",
+            "email": "sergey270307@gmail.com",
+            "type_id": 2
+        }
+
++ Response 201 (application/json)
+
+    + Headers
+
+            Location: /users/2
+
+    + Body
+
+            {
+                "id": 2,
+                "message": "User created successfully"
+            }
+
++ Response 400 (application/json)
+
+    + Body
+
+            {
+                "status": "error",
+                "message": "Username or email already exists"
+            }
+
+### Вход [POST /auth/login]
+
++ Request (application/json)
+
+        {
+            "email": "sergey270307@gmail.com",
+            "password_hash": "hash"
+        }
+
++ Response 200 (application/json)
+
+    + Headers
+
+            Location: /users/2
+
+    + Body
+
+            {
+                "status": "success",
+                "message": "Успешно выполнен вход",
+                "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c",
+                "user": {
+                    "id": 2,
+                    "username": "kenny",
+                    "name": "Sergey Sidlik",
+                    "email": "sergey270307@gmail.com",
+                    "type_id": 2
+                }
+            }
+
++ Response 401 (application/json)
+
+    + Body
+
+            {
+                "status": "denied",
+                "message": "Неверный пароль"
+            }
+
++ Response 404 (application/json)
+
+    + Body
+
+            {
+                "status": "error",
+                "message": "Пользователь не найден"
+            }
+
+# Группа Пользователи
+
+## Пользователь [/users/{id}]
+
++ Parameters
+    + id (integer) - ID пользователя
+
+### Получить пользователя [GET]
+
++ Headers
+
+        Authorization: Bearer {token}
+
++ Response 200 (application/json)
+
+        {
+            "id": 1,
+            "username": "john_doe",
+            "name": "John Doe",
+            "email": "john@example.com",
+            "type_id": 1
+        }
+
+### Обновить пользователя [PUT]
+
++ Headers
+
+        Authorization: Bearer {token}
+
++ Request (application/json)
+
+        {
+            "username": "john_doe",
+            "name": "John Doe",
+            "email": "john@example.com",
+            "type_id": 1
+        }
+
++ Response 200 (application/json)
+
+        {
+            "message": "User updated"
+        }
+
++ Response 403 (application/json)
+
+        {
+            "message": "Forbidden - can only update own profile"
+        }
+
+### Удалить пользователя [DELETE]
+
++ Headers
+
+        Authorization: Bearer {token}
+
++ Response 200 (application/json)
+
+        {
+            "message": "User deleted"
+        }
+
++ Response 403 (application/json)
+
+        {
+            "message": "Forbidden - insufficient permissions"
+        }
+
+## Коллекция пользователей [/users]
+
+### Создать пользователя [POST]
+
++ Headers
+
+        Authorization: Bearer {token}
+
++ Request (application/json)
+
+        {
+            "username": "john_doe",
+            "name": "John Doe",
+            "password_hash": "hashed_password",
+            "email": "john@example.com",
+            "type_id": 1
+        }
+
++ Response 201 (application/json)
+
+        {
+            "id": 1,
+            "message": "User created"
+        }
+
+### Получить всех пользователей [GET]
+
++ Headers
+
+        Authorization: Bearer {token}
+
++ Response 200 (application/json)
+
+        [
+            {
+                "id": 1,
+                "username": "john_doe",
+                "name": "John Doe",
+                "email": "john@example.com",
+                "type_id": 1
+            }
+        ]
+
+# Группа Типы пользователей
+
+## Типы пользователей [/user_types]
+
+### Получить все типы [GET]
+
++ Response 200 (application/json)
+
+        [
+            {
+                "id": 1,
+                "type": "admin"
+            },
+            {
+                "id": 2,
+                "type": "participant"
+            }
+        ]
+
+# Группа События
+
+## Событие [/events/{id}]
+
++ Parameters
+    + id (integer) - ID события
+
+### Получить событие [GET]
+
++ Response 200 (application/json)
+
+        {
+            "id": 1,
+            "name": "Hackathon 2024",
+            "description": "Annual programming competition",
+            "date_time": "2024-06-01T10:00:00Z",
+            "place": "Main Campus"
+        }
+
+### Обновить событие [PUT]
+
++ Headers
+
+        Authorization: Bearer {token}
+
++ Request (application/json)
+
+        {
+            "name": "Hackathon 2024",
+            "description": "Annual programming competition",
+            "date_time": "2024-06-01T10:00:00Z",
+            "place": "Main Campus"
+        }
+
++ Response 200 (application/json)
+
+        {
+            "message": "Event updated"
+        }
+
+## Коллекция событий [/events]
+
+### Создать событие [POST]
+
++ Headers
+
+        Authorization: Bearer {token}
+
++ Request (application/json)
+
+        {
+            "name": "Hackathon 2024",
+            "description": "Annual programming competition",
+            "date_time": "2024-06-01T10:00:00Z",
+            "place": "Main Campus"
+        }
+
++ Response 201 (application/json)
+
+        {
+            "id": 1,
+            "message": "Event created"
+        }
+
++ Response 403 (application/json)
+
+        {
+            "message": "Forbidden - admin access required"
+        }
+
+### Получить все события [GET]
+
++ Response 200 (application/json)
+
+        [
+            {
+                "id": 1,
+                "name": "Hackathon 2024",
+                "description": "Annual programming competition",
+                "date_time": "2024-06-01T10:00:00Z",
+                "place": "Main Campus"
+            }
+        ]
+
+# Группа Кейсы
+
+## Кейс [/cases/{id}]
+
++ Parameters
+    + id (integer) - ID кейса
+
+### Получить кейс [GET]
+
++ Response 200 (application/json)
+
+        {
+            "id": 1,
+            "name": "AI Challenge",
+            "description": "Develop AI solution for healthcare",
+            "event_id": 1
+        }
+
+## Коллекция кейсов [/cases]
+
+### Создать кейс [POST]
+
++ Headers
+
+        Authorization: Bearer {token}
+
++ Request (application/json)
+
+        {
+            "name": "AI Challenge",
+            "description": "Develop AI solution for healthcare",
+            "event_id": 1
+        }
+
++ Response 201 (application/json)
+
+        {
+            "id": 1,
+            "message": "Case created"
+        }
+
+### Получить кейсы по событию [GET]
+
++ Parameters
+    + event_id (integer) - ID события
+
++ Response 200 (application/json)
+
+        [
+            {
+                "id": 1,
+                "name": "AI Challenge",
+                "description": "Develop AI solution for healthcare",
+                "event_id": 1
+            }
+        ]
+
+# Группа Команды
+
+## Команда [/teams/{id}]
+
++ Parameters
+    + id (integer) - ID команды
+
+### Получить команду [GET]
+
++ Headers
+
+        Authorization: Bearer {token}
+
++ Response 200 (application/json)
+
+        {
+            "id": 1,
+            "name": "Team Alpha",
+            "event_id": 1,
+            "case_id": 1
+        }
+
+### Обновить команду [PUT]
+
++ Headers
+
+        Authorization: Bearer {token}
+
++ Request (application/json)
+
+        {
+            "name": "Team Alpha Updated",
+            "event_id": 1,
+            "case_id": 1
+        }
+
++ Response 200 (application/json)
+
+        {
+            "message": "Team updated"
+        }
+
+## Коллекция команд [/teams]
+
+### Создать команду [POST]
+
++ Headers
+
+        Authorization: Bearer {token}
+
++ Request (application/json)
+
+        {
+            "name": "Team Alpha",
+            "event_id": 1,
+            "case_id": 1
+        }
+
++ Response 201 (application/json)
+
+        {
+            "id": 1,
+            "message": "Team created"
+        }
+
+### Получить команды по событию [GET]
+
++ Headers
+
+        Authorization: Bearer {token}
+
++ Parameters
+    + event_id (integer) - ID события
+
++ Response 200 (application/json)
+
+        [
+            {
+                "id": 1,
+                "name": "Team Alpha",
+                "event_id": 1,
+                "case_id": 1
+            }
+        ]
+
+# Группа Участники команд
+
+## Участники команды [/teams/{team_id}/members]
+
++ Parameters
+    + team_id (integer) - ID команды
+
+### Добавить участника [POST]
+
++ Headers
+
+        Authorization: Bearer {token}
+
++ Request (application/json)
+
+        {
+            "user_id": 1
+        }
+
++ Response 201 (application/json)
+
+        {
+            "message": "Member added to team"
+        }
+
+### Получить участников команды [GET]
+
++ Headers
+
+        Authorization: Bearer {token}
+
++ Response 200 (application/json)
+
+        [
+            {
+                "id": 1,
+                "user_id": 1,
+                "team_id": 1,
+                "username": "john_doe",
+                "name": "John Doe"
+            }
+        ]
+
+## Участник команды [/teams/{team_id}/members/{user_id}]
+
++ Parameters
+    + team_id (integer) - ID команды
+    + user_id (integer) - ID пользователя
+
+### Удалить участника [DELETE]
+
++ Headers
+
+        Authorization: Bearer {token}
+
++ Response 200 (application/json)
+
+        {
+            "message": "Member removed from team"
+        }
+
+# Группа Контрольные точки
+
+## Контрольная точка [/checkpoints/{id}]
+
++ Parameters
+    + id (integer) - ID контрольной точки
+
+### Получить контрольную точку [GET]
+
++ Headers
+
+        Authorization: Bearer {token}
+
++ Response 200 (application/json)
+
+        {
+            "id": 1,
+            "start_time": "2024-06-01T10:00:00Z",
+            "presentation_duration": 30,
+            "interval_duration": 10,
+            "case_id": 1,
+            "place": "Room 101"
+        }
+
+## Коллекция контрольных точек [/checkpoints]
+
+### Создать контрольную точку [POST]
+
++ Headers
+
+        Authorization: Bearer {token}
+
++ Request (application/json)
+
+        {
+            "start_time": "2024-06-01T10:00:00Z",
+            "presentation_duration": 30,
+            "interval_duration": 10,
+            "case_id": 1,
+            "place": "Room 101"
+        }
+
++ Response 201 (application/json)
+
+        {
+            "id": 1,
+            "message": "Checkpoint created"
+        }
+
+### Получить контрольные точки по кейсу [GET]
+
++ Headers
+
+        Authorization: Bearer {token}
+
++ Parameters
+    + case_id (integer) - ID кейса
+
++ Response 200 (application/json)
+
+        [
+            {
+                "id": 1,
+                "start_time": "2024-06-01T10:00:00Z",
+                "presentation_duration": 30,
+                "interval_duration": 10,
+                "case_id": 1,
+                "place": "Room 101"
+            }
+        ]
+
+# Группа Лайки
+
+## Лайки [/likes]
+
+### Поставить лайк [POST]
+
++ Headers
+
+        Authorization: Bearer {token}
+
++ Request (application/json)
+
+        {
+            "team_id": 1,
+            "checkpoint_id": 1,
+            "liked_by": 1
+        }
+
++ Response 201 (application/json)
+
+        {
+            "id": 1,
+            "message": "Like added"
+        }
+
+### Получить лайки команды [GET]
+
++ Headers
+
+        Authorization: Bearer {token}
+
++ Parameters
+    + team_id (integer) - ID команды
+    + checkpoint_id (integer) - ID контрольной точки
+
++ Response 200 (application/json)
+
+        [
+            {
+                "id": 1,
+                "team_id": 1,
+                "checkpoint_id": 1,
+                "liked_by": 1
+            }
+        ]

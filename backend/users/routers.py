@@ -3,7 +3,7 @@ from django.contrib.auth import get_user_model
 from django.db import IntegrityError
 from ninja_jwt.authentication import JWTAuth
 from ninja.errors import HttpError
-from .schemas import UserCreateSchema, UserUpdateSchema, UserResponseSchema
+from .schemas import UserCreateSchema, UserUpdateSchema, UserResponseSchema, LoginSchema, TokenSchema
 
 User = get_user_model()
 router = Router()
@@ -15,14 +15,9 @@ def register(request, payload: UserCreateSchema):
         user = User.objects.create_user(
             username=payload.username,
             email=payload.email,
-            name=payload.name
         )
     except IntegrityError:
         raise HttpError(400, "Пользователь с таким username или email уже существует")
-    for field in ["vk_id", "tg_id", "institution", "birth_date"]:
-        value = getattr(payload, field, None)
-        if value:
-            setattr(user, field, value)
     user.save()
     return user
 
@@ -37,3 +32,18 @@ def update_me(request, payload: UserUpdateSchema):
             setattr(user, field, value)
     user.save()
     return user
+
+
+@router.post("/login", response=TokenSchema)
+def login(request, payload: LoginSchema):
+    """
+    Логин пользователя. Возвращает JWT токен.
+    """
+    user = authenticate(username=payload.username, password=payload.password)
+
+    if not user:
+        raise HttpError(401, "Неверный username или пароль")
+
+    # Генерация токена
+    refresh = RefreshToken.for_user(user)
+    return TokenSchema(access_token=str(refresh.access_token))

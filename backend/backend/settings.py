@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-(-(&zc211b)an9&@cgamv0q^#mh_d8-_3giy*d_d(ahs$m0$m-
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['newvc.ru']
+ALLOWED_HOSTS = ['newvc.ru', '127.0.0.1']
 
 
 # Application definition
@@ -79,7 +79,7 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'database.sqlite3',
+        'NAME': BASE_DIR / 'data/database.sqlite3',
     }
 }
 
@@ -113,9 +113,9 @@ NINJA_JWT = {
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'ru'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Krasnoyarsk'
 
 USE_I18N = True
 
